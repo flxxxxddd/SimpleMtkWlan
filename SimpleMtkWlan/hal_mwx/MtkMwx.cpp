@@ -59,6 +59,7 @@ OSDefineMetaClassAndStructors(MtkMwx, MtkHalService)
 #define PCI_PRODUCT_MEDIATEK_MT7921    0x7961
 #define PCI_PRODUCT_MEDIATEK_MT7921K   0x0608
 #define PCI_PRODUCT_MEDIATEK_MT7922    0x7922
+#define PCI_PRODUCT_MEDIATEK_MT7922_PCIE 0x0616	/* MT7922 as PCIe endpoint, AMD RZ616 */
 
 /*
  * RX rate histogram from the P-RXV (RXD group 3) of unicast frames, to see
@@ -340,6 +341,7 @@ static const struct pci_matchid mwx_devices[] = {
 	{ PCI_VENDOR_MEDIATEK, PCI_PRODUCT_MEDIATEK_MT7921 },
 	{ PCI_VENDOR_MEDIATEK, PCI_PRODUCT_MEDIATEK_MT7921K },
 	{ PCI_VENDOR_MEDIATEK, PCI_PRODUCT_MEDIATEK_MT7922 },
+	{ PCI_VENDOR_MEDIATEK, PCI_PRODUCT_MEDIATEK_MT7922_PCIE },
 };
 
 /* Keep the OpenBSD DPRINTF path available, but do not enable it by default.
@@ -2270,7 +2272,8 @@ mwx_attach(struct device *parent, struct device *self, void *aux)
 	sc->sc_dmat = pa->pa_dmat;
 	sc->sc_intr_mask = MT_INT_RX_DONE_ALL | MT_INT_TX_DONE_ALL |
 	    MT_INT_MCU_CMD;
-	if (PCI_PRODUCT(pa->pa_id) == PCI_PRODUCT_MEDIATEK_MT7922)
+	if (PCI_PRODUCT(pa->pa_id) == PCI_PRODUCT_MEDIATEK_MT7922 ||
+	    PCI_PRODUCT(pa->pa_id) == PCI_PRODUCT_MEDIATEK_MT7922_PCIE)
 		sc->sc_hwtype = MWX_HW_MT7922;
 	else
 		sc->sc_hwtype = MWX_HW_MT7921;

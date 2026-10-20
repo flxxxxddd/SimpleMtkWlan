@@ -414,8 +414,10 @@ int bus_dmamap_load(bus_dmamap_t map, mbuf_t mb) {
 				map->dm_bounce_mem = 0;
 				map->dm_bounce_size = 0;
 			}
+			/* x86 packet DMA is coherent; keep payload copies in cached RAM. */
 			IOBufferMemoryDescriptor *mem =
-			    alloc_dma_memory(bounce_size, PAGE_SIZE);
+			    alloc_dma_memory(bounce_size, PAGE_SIZE,
+			    kIOMemoryPhysicallyContiguous | kIOMapDefaultCache);
 			if (mem == 0)
 				return 1;
 			map->dm_bounce_mem = mem;
